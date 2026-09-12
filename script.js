@@ -98,15 +98,18 @@ const menuBtn=document.getElementById('menuBtn');
 const mobileNav=document.getElementById('mobileNav');
 let open=false;
 if(menuBtn && mobileNav){
+  const menuLabel = menuBtn.querySelector('.menu-label');
   menuBtn.addEventListener('click',()=>{
     open=!open;
     mobileNav.classList.toggle('open', open);
     mobileNav.setAttribute('aria-hidden', String(!open));
-    menuBtn.textContent=open?'CLOSE':'MENU';
+    if(menuLabel) menuLabel.textContent=open?'CLOSE':'MENU';
+    else menuBtn.textContent=open?'CLOSE':'MENU';
     menuBtn.classList.toggle('open', open);
     menuBtn.setAttribute('aria-expanded', String(open));
-    // subtle scale pop
-    menuBtn.animate([{transform:'scale(0.96)'},{transform:'scale(1)'}], {duration:180, easing:'ease-out'});
+    // hamburger + label pop
+    menuBtn.animate([{transform:'scale(0.96)'},{transform:'scale(1)'}], {duration:200, easing:'ease-out'});
+    if(menuLabel) menuLabel.animate([{opacity:0, transform:'translateY(4px)'},{opacity:1, transform:'translateY(0)'}], {duration:220, easing:'ease-out'});
   });
   function getStickyOffset(){
     const topbar = document.querySelector('.topbar');
@@ -128,12 +131,13 @@ if(menuBtn && mobileNav){
       // close first, then scroll after nav collapses so rect is correct and header doesn't cover target
       open=false;
       mobileNav.classList.remove('open');
-      menuBtn.textContent='MENU';
+      const ml = menuBtn.querySelector('.menu-label');
+      if(ml) ml.textContent='MENU'; else menuBtn.textContent='MENU';
       menuBtn.classList.remove('open');
       menuBtn.setAttribute('aria-expanded','false');
       mobileNav.setAttribute('aria-hidden','true');
       // wait for collapse animation (320ms) then scroll with correct offset
-      setTimeout(()=> scrollToSection(id), 360);
+      setTimeout(()=> scrollToSection(id), 380);
     });
   });
   // desktop navbar links — offset for sticky topbar+navbar
